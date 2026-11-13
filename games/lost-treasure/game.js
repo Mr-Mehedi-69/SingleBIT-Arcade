@@ -5,7 +5,7 @@ const W=canvas.width,H=canvas.height,keys={left:false,right:false};
 const themes=[{name:'GREEN FOREST',sky:'#173d36',ground:'#376b43',glow:'#9be66a'},{name:'DARK CAVE',sky:'#171d3b',ground:'#45436c',glow:'#66dcff'},{name:'ANCIENT TEMPLE',sky:'#503329',ground:'#97704a',glow:'#ffd36a'}];
 let player,loot,world=0,gems=0,hp=3,running=false,raf=0,lastTime=0,invulnerable=0;
 const platforms=[{x:80,y:370,w:100},{x:250,y:325,w:100},{x:420,y:280,w:100},{x:590,y:325,w:100},{x:720,y:370,w:100}];
-function setupLevel(){player={x:35,y:388,vx:0,vy:0,w:30,h:42,onGround:true};loot=Array.from({length:7},(_,i)=>({x:145+i*92,y:285-(i%3)*48,r:9,got:false}));invulnerable=0;keys.left=false;keys.right=false;}
+function setupLevel(){player={x:35,y:388,vx:0,vy:0,w:30,h:42,onGround:true};loot=Array.from({length:7},(_,i)=>({x:145+i*92,y:285-(i%3)*48,r:9,got:false}));invulnerable=0;}
 function updateHud(){scoreEl.textContent=gems;hpEl.textContent='♥ '.repeat(hp).trim()||'—';}
 function draw(){
  const t=themes[world];ctx.clearRect(0,0,W,H);ctx.fillStyle=t.sky;ctx.fillRect(0,0,W,H);
@@ -19,7 +19,7 @@ function draw(){
  ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='12px Arial';ctx.fillText('LAND '+(world+1)+'/3',20,49);
 }
 function showOverlay(title,message,buttonText,action){running=false;cancelAnimationFrame(raf);overlay.classList.remove('hidden');overlay.innerHTML='<h2>'+title+'</h2><p>'+message+'</p><button class="btn" id="overlay-action">'+buttonText+'</button>';document.querySelector('#overlay-action').addEventListener('click',action);}
-function levelComplete(){if(world<2){world++;setupLevel();updateHud();draw();}else{showOverlay('TREASURE FOUND!', 'You explored all three lands and collected '+gems+' gems. Excellent adventure!', 'PLAY AGAIN',start);}}
+function levelComplete(){if(world<2){world++;setupLevel();updateHud();draw();ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 30px Arial';ctx.fillText('LAND '+(world+1)+' UNLOCKED!',W/2,H/2);ctx.textAlign='left';}else{showOverlay('TREASURE FOUND!', 'You explored all three lands and collected '+gems+' gems. Excellent adventure!', 'PLAY AGAIN',start);}}
 function gameOver(){showOverlay('ADVENTURE OVER','You collected '+gems+' gems. Give it another try!', 'TRY AGAIN',start);}
 function jump(){if(running&&player.onGround){player.vy=-11.5;player.onGround=false}}
 function update(dt){
