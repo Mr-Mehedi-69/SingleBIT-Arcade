@@ -1,7 +1,7 @@
 (()=> {
 const games=window.SINGLEBIT_GAMES||[],grid=document.querySelector('#grid'),search=document.querySelector('#search'),sort=document.querySelector('#sort'),filters=[...document.querySelectorAll('[data-filter]')],favBtn=document.querySelector('#favorites-only');
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
-let category='all',favorites=read('sbArcadeFavorites',[]),played=read('sbArcadePlayed',[]),onlyFavorites=false;
+let category='all',favorites=read('sbArcadeFavorites',[]),played=read('sbArcadePlayed',[]),history=read('sbArcadeHistory',[]),onlyFavorites=false;
 const save=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
 const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function render(){
@@ -13,7 +13,7 @@ grid.innerHTML=list.map(g=>{let fav=favorites.includes(g.id);return `<article cl
 document.querySelector('#empty').hidden=list.length!==0;
 document.querySelector('#game-count').textContent=String(games.length).padStart(2,'0');
 grid.querySelectorAll('[data-fav]').forEach(btn=>btn.addEventListener('click',()=>{let id=btn.dataset.fav;favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];save('sbArcadeFavorites',favorites);render()}));
-grid.querySelectorAll('[data-play]').forEach(link=>link.addEventListener('click',()=>{let id=link.dataset.play;played=[id,...played.filter(x=>x!==id)].slice(0,10);save('sbArcadePlayed',played)}));
+grid.querySelectorAll('[data-play]').forEach(link=>link.addEventListener('click',()=>{let id=link.dataset.play;played=[id,...played.filter(x=>x!==id)].slice(0,10);save('sbArcadePlayed',played);history=[{id,at:new Date().toISOString()},...history.filter(x=>x.id!==id)].slice(0,20);save('sbArcadeHistory',history)}));
 }
 search.addEventListener('input',render);sort.addEventListener('change',render);
 filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(b=>b.classList.remove('active'));btn.classList.add('active');category=btn.dataset.filter;render()}));
