@@ -1,1 +1,47 @@
-(()=>{const c=document.querySelector('canvas'),x=c.getContext('2d'),ov=document.querySelector('#overlay');let p,keys={},gems=0,hp=3,run=false,raf,loot,world=0;function setup(){p={x:40,y:300,v:0,vy:0,on:false};loot=Array.from({length:12},(_,i)=>({x:140+i*65,y:300-(i%3)*65,got:false}))}function hud(){document.querySelector('#gems').textContent=gems;document.querySelector('#hp').textContent='♥ '.repeat(hp)}function draw(){let colors=[['#173d36','#376b43','#9be66a'],['#171d3b','#45436c','#66dcff'],['#503329','#97704a','#ffd36a']][world];x.fillStyle=colors[0];x.fillRect(0,0,900,500);x.fillStyle=colors[1];x.fillRect(0,430,900,70);for(let i=0;i<6;i++)x.fillRect(i*170+80,370-(i%3)*45,100,18);loot.forEach(a=>{if(!a.got){x.fillStyle='#ffd34e';x.beginPath();x.arc(a.x,a.y,9,0,7);x.fill()}});x.fillStyle='#25d9ff';x.fillRect(840,340,22,90);x.fillStyle='#087bff';x.fillRect(p.x,p.y,30,42);x.fillStyle='white';x.fillRect(p.x+7,p.y+8,16,9);x.fillStyle=colors[2];x.font='bold 16px Arial';x.fillText(['GREEN FOREST','DARK CAVE','ANCIENT TEMPLE'][world],20,28)}function finish(){run=false;if(world<2){world++;setup();loop()}else{ov.classList.remove('hidden');ov.innerHTML='<h2>TREASURE FOUND!</h2><p>You collected '+gems+' gems across all three lands.</p><button class="btn" id="again">PLAY AGAIN</button>';document.querySelector('#again').onclick=start}}function loop(){if(!run)return;p.x=Math.max(0,Math.min(860,p.x+(keys.r?4:0)-(keys.l?4:0)));p.vy=Math.min(12,p.vy+.55);p.y+=p.vy;p.on=false;if(p.y+42>=430){p.y=388;p.vy=0;p.on=true}for(let i=0;i<6;i++){let px=i*170+80,py=370-(i%3)*45;if(p.x+30>px&&p.x<px+100&&p.y+42>=py&&p.y+42<=py+20&&p.vy>=0){p.y=py-42;p.vy=0;p.on=true}}loot.forEach(a=>{if(!a.got&&Math.abs(p.x+15-a.x)<22&&Math.abs(p.y+20-a.y)<28){a.got=true;gems++;hud()}});if(p.x>820)finish();draw();raf=requestAnimationFrame(loop)}function start(){world=0;gems=0;hp=3;setup();hud();run=true;ov.classList.add('hidden');cancelAnimationFrame(raf);loop()}document.querySelector('#start').onclick=start;function bind(id,k){let b=document.querySelector('#'+id);b.onpointerdown=e=>{e.preventDefault();if(k==='j'){if(p.on){p.vy=-11;p.on=false}}else keys[k]=true};['pointerup','pointerleave','pointercancel'].forEach(v=>b.addEventListener(v,()=>{if(k!=='j')keys[k]=false}))}bind('left','l');bind('right','r');bind('jump','j');document.addEventListener('keydown',e=>{if(['ArrowLeft','a','A'].includes(e.key))keys.l=true;if(['ArrowRight','d','D'].includes(e.key))keys.r=true;if([' ','ArrowUp','w','W'].includes(e.key)&&p?.on){p.vy=-11;p.on=false}});document.addEventListener('keyup',e=>{if(['ArrowLeft','a','A'].includes(e.key))keys.l=false;if(['ArrowRight','d','D'].includes(e.key))keys.r=false});setup();draw()})();
+(()=> {
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),overlay=document.querySelector('#overlay');
+const scoreEl=document.querySelector('#gems'),hpEl=document.querySelector('#hp');
+const W=canvas.width,H=canvas.height,keys={left:false,right:false};
+const themes=[{name:'GREEN FOREST',sky:'#173d36',ground:'#376b43',glow:'#9be66a'},{name:'DARK CAVE',sky:'#171d3b',ground:'#45436c',glow:'#66dcff'},{name:'ANCIENT TEMPLE',sky:'#503329',ground:'#97704a',glow:'#ffd36a'}];
+let player,loot,world=0,gems=0,hp=3,running=false,raf=0,lastTime=0,invulnerable=0;
+const platforms=[{x:80,y:370,w:100},{x:250,y:325,w:100},{x:420,y:280,w:100},{x:590,y:325,w:100},{x:720,y:370,w:100}];
+function setupLevel(){player={x:35,y:388,vx:0,vy:0,w:30,h:42,onGround:true};loot=Array.from({length:7},(_,i)=>({x:145+i*92,y:285-(i%3)*48,r:9,got:false}));invulnerable=0;keys.left=false;keys.right=false;}
+function updateHud(){scoreEl.textContent=gems;hpEl.textContent='♥ '.repeat(hp).trim()||'—';}
+function draw(){
+ const t=themes[world];ctx.clearRect(0,0,W,H);ctx.fillStyle=t.sky;ctx.fillRect(0,0,W,H);
+ for(let i=0;i<35;i++){ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect((i*83)%W,(i*47)%300,2,2)}
+ ctx.fillStyle=t.ground;ctx.fillRect(0,430,W,70);
+ platforms.forEach((p,i)=>{ctx.fillStyle=t.ground;ctx.fillRect(p.x,p.y,p.w,16);ctx.fillStyle=t.glow;ctx.fillRect(p.x,p.y,p.w,3)});
+ loot.forEach(g=>{if(g.got)return;ctx.save();ctx.shadowColor='#ffd34e';ctx.shadowBlur=14;ctx.fillStyle='#ffd34e';ctx.beginPath();ctx.moveTo(g.x,g.y-g.r);ctx.lineTo(g.x+g.r,g.y);ctx.lineTo(g.x,g.y+g.r);ctx.lineTo(g.x-g.r,g.y);ctx.closePath();ctx.fill();ctx.restore()});
+ ctx.save();ctx.shadowColor=t.glow;ctx.shadowBlur=20;ctx.fillStyle=t.glow;ctx.fillRect(842,335,18,95);ctx.restore();
+ if(!(invulnerable>0&&Math.floor(invulnerable/80)%2===0)){ctx.fillStyle='#087bff';ctx.fillRect(player.x,player.y,player.w,player.h);ctx.fillStyle='#eaf8ff';ctx.fillRect(player.x+6,player.y+8,18,10);ctx.fillStyle='#06101d';ctx.fillRect(player.x+10,player.y+11,4,4);ctx.fillRect(player.x+19,player.y+11,4,4)}
+ ctx.fillStyle=t.glow;ctx.font='bold 16px Arial';ctx.fillText(t.name,20,28);
+ ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='12px Arial';ctx.fillText('LAND '+(world+1)+'/3',20,49);
+}
+function showOverlay(title,message,buttonText,action){running=false;cancelAnimationFrame(raf);overlay.classList.remove('hidden');overlay.innerHTML='<h2>'+title+'</h2><p>'+message+'</p><button class="btn" id="overlay-action">'+buttonText+'</button>';document.querySelector('#overlay-action').addEventListener('click',action);}
+function levelComplete(){if(world<2){world++;setupLevel();updateHud();draw();}else{showOverlay('TREASURE FOUND!', 'You explored all three lands and collected '+gems+' gems. Excellent adventure!', 'PLAY AGAIN',start);}}
+function gameOver(){showOverlay('ADVENTURE OVER','You collected '+gems+' gems. Give it another try!', 'TRY AGAIN',start);}
+function jump(){if(running&&player.onGround){player.vy=-11.5;player.onGround=false}}
+function update(dt){
+ const step=Math.min(dt/16.67,2.2),oldY=player.y;
+ player.vx=(keys.right?3.7:0)-(keys.left?3.7:0);player.x=Math.max(0,Math.min(W-player.w,player.x+player.vx*step));
+ player.vy=Math.min(12,player.vy+.55*step);player.y+=player.vy*step;player.onGround=false;
+ if(player.y+player.h>=430){player.y=430-player.h;player.vy=0;player.onGround=true}
+ platforms.forEach(p=>{if(player.vy>=0&&oldY+player.h<=p.y+5&&player.y+player.h>=p.y&&player.x+player.w>p.x&&player.x<p.x+p.w){player.y=p.y-player.h;player.vy=0;player.onGround=true}});
+ loot.forEach(g=>{if(!g.got&&Math.abs(player.x+player.w/2-g.x)<24&&Math.abs(player.y+player.h/2-g.y)<28){g.got=true;gems++;updateHud()}});
+ if(invulnerable>0)invulnerable-=dt;
+ // Small harmless bump from the stage boundary is avoided; the portal is the level exit.
+ if(player.x+player.w>=838){levelComplete();return}
+ if(player.y>H+50){hp--;updateHud();if(hp<=0){gameOver();return}player.x=35;player.y=388;player.vy=0;invulnerable=1300}
+}
+function loop(time){if(!running)return;const dt=lastTime?time-lastTime:16.67;lastTime=time;update(dt);if(!running)return;draw();raf=requestAnimationFrame(loop)}
+function start(){cancelAnimationFrame(raf);world=0;gems=0;hp=3;lastTime=0;setupLevel();updateHud();overlay.classList.add('hidden');running=true;draw();raf=requestAnimationFrame(loop)}
+function setKey(key,value){if(key==='left')keys.left=value;if(key==='right')keys.right=value}
+function bindHold(id,key){const el=document.querySelector('#'+id);const down=e=>{e.preventDefault();el.setPointerCapture?.(e.pointerId);setKey(key,true)};const up=e=>{e.preventDefault();setKey(key,false)};el.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(type=>el.addEventListener(type,up));}
+bindHold('left','left');bindHold('right','right');
+const jumpBtn=document.querySelector('#jump');jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();jump()});
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowleft','a','arrowright','d',' ','arrowup','w'].includes(k))e.preventDefault();if(k==='arrowleft'||k==='a')setKey('left',true);if(k==='arrowright'||k==='d')setKey('right',true);if(k===' '||k==='arrowup'||k==='w')jump()});
+document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='arrowleft'||k==='a')setKey('left',false);if(k==='arrowright'||k==='d')setKey('right',false)});
+window.addEventListener('blur',()=>{keys.left=false;keys.right=false});
+document.querySelector('#start').addEventListener('click',start);setupLevel();updateHud();draw();
+})();
