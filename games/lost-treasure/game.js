@@ -1,47 +1,14 @@
-(()=> {
-const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),overlay=document.querySelector('#overlay');
-const scoreEl=document.querySelector('#gems'),hpEl=document.querySelector('#hp');
-const W=canvas.width,H=canvas.height,keys={left:false,right:false};
-const themes=[{name:'GREEN FOREST',sky:'#173d36',ground:'#376b43',glow:'#9be66a'},{name:'DARK CAVE',sky:'#171d3b',ground:'#45436c',glow:'#66dcff'},{name:'ANCIENT TEMPLE',sky:'#503329',ground:'#97704a',glow:'#ffd36a'}];
-let player,loot,world=0,gems=0,hp=3,running=false,raf=0,lastTime=0,invulnerable=0;
-const platforms=[{x:80,y:370,w:100},{x:250,y:325,w:100},{x:420,y:280,w:100},{x:590,y:325,w:100},{x:720,y:370,w:100}];
-function setupLevel(){player={x:35,y:388,vx:0,vy:0,w:30,h:42,onGround:true};loot=Array.from({length:7},(_,i)=>({x:145+i*92,y:285-(i%3)*48,r:9,got:false}));invulnerable=0;}
-function updateHud(){scoreEl.textContent=gems;hpEl.textContent='♥ '.repeat(hp).trim()||'—';}
-function draw(){
- const t=themes[world];ctx.clearRect(0,0,W,H);ctx.fillStyle=t.sky;ctx.fillRect(0,0,W,H);
- for(let i=0;i<35;i++){ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect((i*83)%W,(i*47)%300,2,2)}
- ctx.fillStyle=t.ground;ctx.fillRect(0,430,W,70);
- platforms.forEach((p,i)=>{ctx.fillStyle=t.ground;ctx.fillRect(p.x,p.y,p.w,16);ctx.fillStyle=t.glow;ctx.fillRect(p.x,p.y,p.w,3)});
- loot.forEach(g=>{if(g.got)return;ctx.save();ctx.shadowColor='#ffd34e';ctx.shadowBlur=14;ctx.fillStyle='#ffd34e';ctx.beginPath();ctx.moveTo(g.x,g.y-g.r);ctx.lineTo(g.x+g.r,g.y);ctx.lineTo(g.x,g.y+g.r);ctx.lineTo(g.x-g.r,g.y);ctx.closePath();ctx.fill();ctx.restore()});
- ctx.save();ctx.shadowColor=t.glow;ctx.shadowBlur=20;ctx.fillStyle=t.glow;ctx.fillRect(842,335,18,95);ctx.restore();
- if(!(invulnerable>0&&Math.floor(invulnerable/80)%2===0)){ctx.fillStyle='#087bff';ctx.fillRect(player.x,player.y,player.w,player.h);ctx.fillStyle='#eaf8ff';ctx.fillRect(player.x+6,player.y+8,18,10);ctx.fillStyle='#06101d';ctx.fillRect(player.x+10,player.y+11,4,4);ctx.fillRect(player.x+19,player.y+11,4,4)}
- ctx.fillStyle=t.glow;ctx.font='bold 16px Arial';ctx.fillText(t.name,20,28);
- ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='12px Arial';ctx.fillText('LAND '+(world+1)+'/3',20,49);
-}
-function showOverlay(title,message,buttonText,action){running=false;cancelAnimationFrame(raf);overlay.classList.remove('hidden');overlay.innerHTML='<h2>'+title+'</h2><p>'+message+'</p><button class="btn" id="overlay-action">'+buttonText+'</button>';document.querySelector('#overlay-action').addEventListener('click',action);}
-function levelComplete(){if(world<2){world++;setupLevel();updateHud();draw();ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 30px Arial';ctx.fillText('LAND '+(world+1)+' UNLOCKED!',W/2,H/2);ctx.textAlign='left';}else{showOverlay('TREASURE FOUND!', 'You explored all three lands and collected '+gems+' gems. Excellent adventure!', 'PLAY AGAIN',start);}}
-function gameOver(){showOverlay('ADVENTURE OVER','You collected '+gems+' gems. Give it another try!', 'TRY AGAIN',start);}
-function jump(){if(running&&player.onGround){player.vy=-11.5;player.onGround=false}}
-function update(dt){
- const step=Math.min(dt/16.67,2.2),oldY=player.y;
- player.vx=(keys.right?3.7:0)-(keys.left?3.7:0);player.x=Math.max(0,Math.min(W-player.w,player.x+player.vx*step));
- player.vy=Math.min(12,player.vy+.55*step);player.y+=player.vy*step;player.onGround=false;
- if(player.y+player.h>=430){player.y=430-player.h;player.vy=0;player.onGround=true}
- platforms.forEach(p=>{if(player.vy>=0&&oldY+player.h<=p.y+5&&player.y+player.h>=p.y&&player.x+player.w>p.x&&player.x<p.x+p.w){player.y=p.y-player.h;player.vy=0;player.onGround=true}});
- loot.forEach(g=>{if(!g.got&&Math.abs(player.x+player.w/2-g.x)<24&&Math.abs(player.y+player.h/2-g.y)<28){g.got=true;gems++;updateHud()}});
- if(invulnerable>0)invulnerable-=dt;
- // Small harmless bump from the stage boundary is avoided; the portal is the level exit.
- if(player.x+player.w>=838){levelComplete();return}
- if(player.y>H+50){hp--;updateHud();if(hp<=0){gameOver();return}player.x=35;player.y=388;player.vy=0;invulnerable=1300}
-}
-function loop(time){if(!running)return;const dt=lastTime?time-lastTime:16.67;lastTime=time;update(dt);if(!running)return;draw();raf=requestAnimationFrame(loop)}
-function start(){cancelAnimationFrame(raf);world=0;gems=0;hp=3;lastTime=0;setupLevel();updateHud();overlay.classList.add('hidden');running=true;draw();raf=requestAnimationFrame(loop)}
-function setKey(key,value){if(key==='left')keys.left=value;if(key==='right')keys.right=value}
-function bindHold(id,key){const el=document.querySelector('#'+id);const down=e=>{e.preventDefault();el.setPointerCapture?.(e.pointerId);setKey(key,true)};const up=e=>{e.preventDefault();setKey(key,false)};el.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(type=>el.addEventListener(type,up));}
-bindHold('left','left');bindHold('right','right');
-const jumpBtn=document.querySelector('#jump');jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();jump()});
-document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowleft','a','arrowright','d',' ','arrowup','w'].includes(k))e.preventDefault();if(k==='arrowleft'||k==='a')setKey('left',true);if(k==='arrowright'||k==='d')setKey('right',true);if(k===' '||k==='arrowup'||k==='w')jump()});
-document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='arrowleft'||k==='a')setKey('left',false);if(k==='arrowright'||k==='d')setKey('right',false)});
-window.addEventListener('blur',()=>{keys.left=false;keys.right=false});
-document.querySelector('#start').addEventListener('click',start);setupLevel();updateHud();draw();
-})();
+(()=>{const c=document.querySelector('#game'),x=c.getContext('2d'),ov=document.querySelector('#overlay'),gemsEl=document.querySelector('#gems'),hpEl=document.querySelector('#hp'),levelEl=document.querySelector('#level-label'),W=c.width,H=c.height,keys={left:false,right:false},themes=[['GREEN FOREST','#173d36','#376b43','#9be66a'],['DARK CAVE','#171d3b','#45436c','#66dcff'],['ANCIENT TEMPLE','#503329','#97704a','#ffd36a']],plats=[{x:80,y:370,w:100},{x:250,y:325,w:100},{x:420,y:280,w:100},{x:590,y:325,w:100},{x:720,y:370,w:100}];let p,loot,world=0,gems=0,hp=3,run=false,paused=false,raf=0,last=0,inv=0,sound=true,audio=null,toast=0;
+function tone(f=440,d=.08){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),a=audio.createGain();o.frequency.value=f;a.gain.setValueAtTime(.06,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(e){}}
+function hud(){gemsEl.textContent=gems;hpEl.textContent='♥ '.repeat(hp).trim()||'—';levelEl.textContent='LAND '+(world+1)+' / 3'}
+function setup(){p={x:35,y:388,vx:0,vy:0,w:30,h:42,ground:true,face:1,walk:0};loot=Array.from({length:7},(_,i)=>({x:145+i*92,y:285-(i%3)*48,got:false}));inv=0;last=0;hud()}
+function draw(){let [name,sky,ground,glow]=themes[world];x.fillStyle=sky;x.fillRect(0,0,W,H);for(let i=0;i<35;i++){x.fillStyle='#ffffff22';x.fillRect(i*83%W,i*47%300,2,2)}x.fillStyle=ground;x.fillRect(0,430,W,70);plats.forEach(a=>{x.fillStyle=ground;x.fillRect(a.x,a.y,a.w,16);x.fillStyle=glow;x.fillRect(a.x,a.y,a.w,3)});loot.forEach(a=>{if(a.got)return;x.save();x.translate(a.x,a.y);x.rotate(Math.sin(performance.now()/250+a.x)*.2);x.shadowColor='#ffd34e';x.shadowBlur=14;x.fillStyle='#ffd34e';x.beginPath();x.moveTo(0,-9);x.lineTo(9,0);x.lineTo(0,9);x.lineTo(-9,0);x.fill();x.restore()});x.save();x.shadowColor=glow;x.shadowBlur=20;x.fillStyle=glow;x.fillRect(842,335,18,95);x.restore();if(!(inv>0&&Math.floor(inv/80)%2===0)){let bob=p.ground&&p.vx?Math.sin(p.walk)*2:0;x.fillStyle='#087bff';x.fillRect(p.x,p.y+bob,p.w,p.h);x.fillStyle='#eaf8ff';x.fillRect(p.x+5,p.y+7+bob,20,13);x.fillStyle='#06101d';x.fillRect(p.x+(p.face>0?18:8),p.y+11+bob,4,4);x.fillStyle='#062d55';x.fillRect(p.x+4,p.y+p.h-5+bob,8,7);x.fillRect(p.x+18,p.y+p.h-5+bob,8,7)}x.fillStyle=glow;x.font='bold 16px Arial';x.fillText(name,20,28);x.fillStyle='#ffffffbb';x.font='12px Arial';x.fillText('LAND '+(world+1)+'/3',20,49);if(performance.now()<toast){x.fillStyle='#0009';x.fillRect(220,205,460,70);x.fillStyle='white';x.textAlign='center';x.font='bold 27px Arial';x.fillText('LAND '+(world+1)+' UNLOCKED!',450,249);x.textAlign='left'}}
+function overlay(title,msg,label,fn){run=false;paused=false;cancelAnimationFrame(raf);ov.classList.remove('hidden');ov.innerHTML='<h2>'+title+'</h2><p>'+msg+'</p><button class="btn" id="overlay-action">'+label+'</button>';document.querySelector('#overlay-action').onclick=fn}
+function next(){if(world<2){world++;setup();toast=performance.now()+1000;tone(740,.16);draw()}else{tone(880,.3);overlay('TREASURE FOUND!','You explored all three lands and collected '+gems+' gems.','PLAY AGAIN',start)}}
+function jump(){if(run&&!paused&&p.ground){p.vy=-11.5;p.ground=false;tone(300,.07)}}
+function update(dt){let s=Math.min(dt/16.67,2.2),old=p.y;p.vx=(keys.right?3.7:0)-(keys.left?3.7:0);if(p.vx)p.face=Math.sign(p.vx);p.walk+=Math.abs(p.vx)*.08;p.x=Math.max(0,Math.min(W-p.w,p.x+p.vx*s));p.vy=Math.min(12,p.vy+.55*s);p.y+=p.vy*s;p.ground=false;if(p.y+p.h>=430){p.y=430-p.h;p.vy=0;p.ground=true}plats.forEach(a=>{if(p.vy>=0&&old+p.h<=a.y+5&&p.y+p.h>=a.y&&p.x+p.w>a.x&&p.x<a.x+a.w){p.y=a.y-p.h;p.vy=0;p.ground=true}});loot.forEach(a=>{if(!a.got&&Math.abs(p.x+p.w/2-a.x)<24&&Math.abs(p.y+p.h/2-a.y)<28){a.got=true;gems++;hud();tone(650,.06)}});if(inv>0)inv-=dt;if(p.x+p.w>=838){next();return}if(p.y>H+50){hp--;hud();if(hp<=0){overlay('ADVENTURE OVER','You collected '+gems+' gems. Try again!','TRY AGAIN',start);return}p.x=35;p.y=388;p.vy=0;inv=1300;tone(180,.18)}}
+function loop(t){if(!run||paused)return;let dt=last?t-last:16.67;last=t;update(dt);if(!run||paused)return;draw();raf=requestAnimationFrame(loop)}
+function start(){cancelAnimationFrame(raf);world=0;gems=0;hp=3;setup();keys.left=keys.right=false;ov.classList.add('hidden');run=true;paused=false;document.querySelector('#pause').textContent='Ⅱ PAUSE';draw();raf=requestAnimationFrame(loop)}
+function pause(){if(!run)return;paused=!paused;document.querySelector('#pause').textContent=paused?'▶ RESUME':'Ⅱ PAUSE';if(paused){cancelAnimationFrame(raf);ov.classList.remove('hidden');ov.innerHTML='<h2>GAME PAUSED</h2><p>Your adventure is waiting.</p><button class="btn" id="resume">RESUME</button>';document.querySelector('#resume').onclick=pause}else{ov.classList.add('hidden');last=0;raf=requestAnimationFrame(loop)}}
+function hold(id,k){let el=document.querySelector('#'+id),down=e=>{e.preventDefault();el.setPointerCapture?.(e.pointerId);keys[k]=true},up=()=>keys[k]=false;el.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(t=>el.addEventListener(t,up))}
+hold('left','left');hold('right','right');document.querySelector('#jump').addEventListener('pointerdown',e=>{e.preventDefault();jump()});document.querySelector('#start').onclick=start;document.querySelector('#pause').onclick=pause;document.querySelector('#sound').onclick=e=>{sound=!sound;e.currentTarget.textContent=sound?'♫ SOUND ON':'♫ SOUND OFF';e.currentTarget.setAttribute('aria-pressed',String(sound));tone(500)};document.querySelector('#fullscreen').onclick=()=>{let a=document.querySelector('.shell');!document.fullscreenElement?a.requestFullscreen?.():document.exitFullscreen?.()};document.addEventListener('keydown',e=>{let k=e.key.toLowerCase();if(['arrowleft','a','arrowright','d',' ','arrowup','w'].includes(k))e.preventDefault();if(k==='arrowleft'||k==='a')keys.left=true;if(k==='arrowright'||k==='d')keys.right=true;if(k===' '||k==='arrowup'||k==='w')jump();if(k==='p')pause()});document.addEventListener('keyup',e=>{let k=e.key.toLowerCase();if(k==='arrowleft'||k==='a')keys.left=false;if(k==='arrowright'||k==='d')keys.right=false});window.addEventListener('blur',()=>{keys.left=keys.right=false});setup();draw()})();
