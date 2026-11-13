@@ -2,3 +2,37 @@
 .brand-logo{width:46px;height:46px;object-fit:contain;border-radius:7px}@media(max-width:700px){.brand-logo{width:38px;height:38px}}
 
 .brand-logo{width:46px;height:46px;object-fit:contain;border-radius:7px}@media(max-width:700px){.brand-logo{width:38px;height:38px}}
+
+/* Phase 02 — game library */
+.brand-logo{width:46px;height:46px;object-fit:contain;border-radius:7px}
+.library-tools{display:grid;grid-template-columns:minmax(180px,1fr) auto auto;gap:12px;margin:28px 0 16px}
+.library-tools input,.library-tools select{min-width:0;width:100%;background:#101827;border:1px solid #ffffff25;border-radius:8px;padding:12px 14px;color:#f4f7ff}
+.library-tools select{cursor:pointer}.filter-btn,.filters button{background:#101827;color:#aebbd0;border:1px solid #ffffff25;border-radius:30px;padding:10px 16px;cursor:pointer}
+.filter-btn.active,.filters button.active{border-color:#087bff;color:white;background:#087bff25}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.game-card{overflow:hidden;background:linear-gradient(145deg,#121d30,#0d1421);border:1px solid #ffffff20;border-radius:13px;transition:transform .2s,border-color .2s}
+.game-card:hover{transform:translateY(-4px);border-color:#087bff88}
+.game-art{height:205px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.game-art.race{background:radial-gradient(circle at 70% 35%,#ffb36b66,transparent 30%),linear-gradient(130deg,#20214b,#963e72,#e98b68)}
+.game-art.forest{background:radial-gradient(circle at 70% 35%,#d2ed8066,transparent 30%),linear-gradient(130deg,#183b38,#4e8062,#9b9c57)}
+.art-symbol{font-size:76px;filter:drop-shadow(0 12px 14px #0008);transition:transform .2s}
+.game-art:hover .art-symbol{transform:scale(1.12)}
+.art-tag{position:absolute;top:14px;left:15px;font-size:10px;letter-spacing:2px;font-weight:700;background:#05070c88;padding:7px 10px;border-radius:20px}
+.art-play{position:absolute;bottom:14px;right:14px;background:#087bff;padding:8px 12px;border-radius:6px;font-size:10px;font-weight:700;opacity:0;transform:translateY(5px);transition:.2s}
+.game-art:hover .art-play{opacity:1;transform:translateY(0)}
+.card-content{padding:17px}.card-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title-row h3{font-size:16px;letter-spacing:.6px;margin:0}
+.heart{border:1px solid #ffffff25;background:#0b1220;color:#aebbd0;border-radius:50%;width:36px;height:36px;font-size:20px;padding:0;flex:0 0 auto}
+.heart.saved{color:#ff6b91;border-color:#ff6b9166}
+.card-content p{color:var(--muted);font-size:13px;line-height:1.6;min-height:42px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #ffffff14;padding-top:13px;color:#8192ac;font-size:11px}
+.play-link{color:#56baff;font-weight:700;white-space:nowrap}
+.empty-state{padding:30px;text-align:center;color:var(--muted);border:1px dashed #ffffff30;border-radius:10px}
+.community{max-width:1120px;margin:0 auto 70px;padding:48px 30px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(120deg,#101c30,#0c1422);border:1px solid #ffffff18;border-radius:15px}
+.community>div:first-child{max-width:570px}.community h2{font-size:clamp(30px,4vw,45px);margin:12px 0}
+.community p:last-child{color:var(--muted);line-height:1.8;font-size:14px}
+.community-mark{display:grid;place-items:center;gap:12px;color:#168bff}
+.community-mark span{width:120px;height:120px;display:grid;place-items:center;border:1px solid #168bff88;background:linear-gradient(145deg,#087bff55,#102d65);font-size:48px;font-weight:700;transform:rotate(-8deg)}
+.community-mark small{font-size:8px;letter-spacing:2px;color:#9aa9c1}
+@media(max-width:700px){.brand-logo{width:38px;height:38px}.library-tools{grid-template-columns:1fr 1fr}.library-tools input{grid-column:1/-1}.grid{grid-template-columns:1fr}.game-art{height:185px}.community{margin:0 18px 45px;padding:28px 22px}.community-mark{display:none}}
