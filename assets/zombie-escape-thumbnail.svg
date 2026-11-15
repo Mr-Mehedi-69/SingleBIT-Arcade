@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Zombie Escape — Neon City Survival</title><desc id="desc">A cyan-clad runner escapes cartoon zombies through a neon city street.</desc>
+<defs>
+ <linearGradient id="sky" x2="1" y2="1"><stop stop-color="#08152b"/><stop offset=".55" stop-color="#17264b"/><stop offset="1" stop-color="#401d48"/></linearGradient>
+ <linearGradient id="road" x2="1" y2="1"><stop stop-color="#132c43"/><stop offset=".5" stop-color="#071522"/><stop offset="1" stop-color="#1a2140"/></linearGradient>
+ <linearGradient id="cyan"><stop stop-color="#8ffff4"/><stop offset=".45" stop-color="#25e7e0"/><stop offset="1" stop-color="#0788d9"/></linearGradient>
+ <linearGradient id="pink"><stop stop-color="#ff648e"/><stop offset="1" stop-color="#8e275c"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow"><feGaussianBlur stdDeviation="9"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#sky)"/>
+<path d="M0 0h350v410H0z" fill="#101c39"/><path d="M0 0h350v28H0z" fill="#273c63"/>
+<path d="M25 65h260v200H25z" fill="#ffb34d" opacity=".18"/><path d="M45 85h220v160H45z" fill="#ffb34d" opacity=".8"/><path d="M45 165h220M155 85v160" stroke="#ffe2a4" stroke-width="9" opacity=".6"/>
+<path d="M860 0h340v320H860z" fill="#101b3b"/><path d="M900 38h250v12H900zM900 75h250v12H900zM900 112h250v12H900z" fill="#3c5277"/>
+<path d="M320 205L1200 125v550H0V390z" fill="url(#road)"/>
+<path d="M0 470L1200 240M0 600L1200 390" stroke="#2a4d72" stroke-width="4" opacity=".55"/>
+<path d="M580 290l-32 65h22l-20 50 60-78h-26l28-37z" fill="#1ee8e0" opacity=".3" filter="url(#glow)"/>
+<path d="M420 450l-28 60h22l-18 40 55-72h-25l25-28zM900 360l-25 52h18l-16 35 48-62h-22l22-25z" fill="#21d9eb" opacity=".6"/>
+<path d="M70 360h180l25 90H35z" fill="#182b48" stroke="#426083" stroke-width="5"/><path d="M85 378h140l15 44H70z" fill="#273e5b"/>
+<path d="M80 438h180" stroke="#ffb34d" stroke-width="8" filter="url(#glow)"/>
+<path d="M1000 455h160v115h-160z" fill="#121b35" stroke="#ff4f8a" stroke-width="5"/><path d="M1025 480h110v45h-110z" fill="#183d61"/><path d="M1040 540h80" stroke="#ff4f8a" stroke-width="10" filter="url(#glow)"/>
+<path d="M830 155l70-95 70 95z" fill="#391d42" stroke="#ff3c77" stroke-width="9" filter="url(#glow)"/><path d="M900 85v35" stroke="#ffd2df" stroke-width="12" stroke-linecap="round"/><circle cx="900" cy="140" r="7" fill="#ffd2df"/>
+<g opacity=".95">
+ <g transform="translate(940 230)"><ellipse cy="44" rx="52" ry="16" fill="#000" opacity=".35"/><circle cy="-4" r="35" fill="#548d79"/><path d="M-33-12q-5-44 34-42 35 3 35 42" fill="#263b49"/><circle cx="-12" cy="-8" r="8" fill="#ff476f" filter="url(#glow)"/><circle cx="13" cy="-8" r="8" fill="#ff476f" filter="url(#glow)"/><path d="M-12 13q12 14 25 0" fill="none" stroke="#241d31" stroke-width="7"/><path d="M-29 34l-24 55 20 8 26-48 28 46 19-12-25-60" fill="#345a62"/></g>
+ <g transform="translate(1080 160) scale(.8)"><ellipse cy="45" rx="48" ry="13" fill="#000" opacity=".35"/><circle cy="0" r="36" fill="#5b927c"/><path d="M-30-17q15-40 52-15l9 30" fill="#243949"/><circle cx="-12" cy="-6" r="8" fill="#ff476f" filter="url(#glow)"/><circle cx="13" cy="-6" r="8" fill="#ff476f" filter="url(#glow)"/><path d="M-15 15h30" stroke="#251b2c" stroke-width="8"/><path d="M-25 34l-35 60 19 8 36-45 28 45 20-9-29-62" fill="#31565d"/></g>
+ <g transform="translate(770 280) scale(.68)"><circle cy="0" r="38" fill="#659b7f"/><path d="M-34-14q-4-40 35-40 36 2 35 43" fill="#263a4b"/><circle cx="-13" cy="-8" r="8" fill="#ff476f" filter="url(#glow)"/><circle cx="14" cy="-8" r="8" fill="#ff476f" filter="url(#glow)"/><path d="M-15 17h30" stroke="#241d31" stroke-width="8"/><path d="M-25 35l-34 58 20 10 36-45 28 46 20-12-29-59" fill="#3c6766"/></g>
+</g>
+<g filter="url(#glow)"><circle cx="265" cy="545" r="43" fill="#15dfe8" opacity=".22"/><circle cx="265" cy="545" r="27" fill="none" stroke="#6ffff6" stroke-width="8"/><circle cx="265" cy="545" r="10" fill="#d9fffb"/><circle cx="870" cy="465" r="28" fill="none" stroke="#6ffff6" stroke-width="8"/><circle cx="870" cy="465" r="10" fill="#d9fffb"/></g>
+<ellipse cx="570" cy="575" rx="165" ry="38" fill="#20e4e4" opacity=".22" filter="url(#shadow)"/>
+<g transform="translate(555 430) rotate(-13)">
+ <path d="M-50 5q-55 15-62 66l52 27 53-55z" fill="#101b34"/><path d="M-42-12q-30-40-7-76 26-38 70-18 38 17 24 65l-12 45z" fill="#171d36"/>
+ <path d="M-46-67q-2-60 53-68 53 0 61 54l-9 24-89 14z" fill="#10162a"/>
+ <path d="M-38-63q10-48 54-43 41 6 42 45l-10 26-79 3z" fill="#f0b58e"/>
+ <path d="M-33-91q17-53 62-45 38 6 48 44l-25-6-17-21-22 23z" fill="#16182b"/>
+ <path d="M-19-72l18 3M25-75l17 3" stroke="#182039" stroke-width="8" stroke-linecap="round"/><path d="M-10-44q17 13 33-1" stroke="#7e3545" stroke-width="5" fill="none"/>
+ <path d="M-60-28q-27 0-43 35l23 39 58-24 5-33z" fill="url(#cyan)" stroke="#8ffff4" stroke-width="5"/>
+ <path d="M-35-18l-10 48 52 30 32-39-16-43z" fill="#087db7" stroke="#5ff8ed" stroke-width="5"/>
+ <path d="M-48 16l-40 45 18 20 50-34z" fill="#f0b58e"/><path d="M30 13l40 28-15 24-48-27z" fill="#f0b58e"/>
+ <path d="M-23 47l-22 79 36 15 31-80z" fill="#182944"/><path d="M24 51l26 66 33-8-26-78z" fill="#172842"/>
+ <path d="M-49 117l-8 24 55 12 9-18zM51 111l-7 25 53 8 7-20z" fill="#e9f4ff" stroke="#38dce3" stroke-width="5"/>
+ <path d="M-50-24l-30 25 22 27 27-15M38-18l30 15-13 31-29-12" fill="#25d8d1"/>
+</g>
+<path d="M0 630h1200" stroke="#31e6d0" stroke-width="3" opacity=".7"/>
+<text x="48" y="625" font-family="Arial,sans-serif" font-size="23" font-weight="900" letter-spacing="5" fill="#f2ffff">ZOMBIE ESCAPE</text>
+<text x="50" y="653" font-family="Arial,sans-serif" font-size="11" font-weight="bold" letter-spacing="4" fill="#31e6d0">SURVIVE THE NIGHT · SINGLEBIT ARCADE</text>
+</svg>
