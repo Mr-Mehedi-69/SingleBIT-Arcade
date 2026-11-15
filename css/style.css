@@ -38,4 +38,4 @@
 @media(max-width:700px){.brand-logo{width:38px;height:38px}.library-tools{grid-template-columns:1fr 1fr}.library-tools input{grid-column:1/-1}.grid{grid-template-columns:1fr}.game-art{height:185px}.community{margin:0 18px 45px;padding:28px 22px}.community-mark{display:none}}
 
 /* Zombie Escape library artwork */
-.game-art.zombie{background:radial-gradient(circle at 50% 45%,#31e6d044,transparent 30%),linear-gradient(130deg,#102b3a,#24334c,#762d4b)}
+.game-art.zombie{background:#101b2c url('../assets/zombie-escape-thumbnail.svg') center/cover no-repeat}.game-art.zombie .art-symbol{display:none}
