@@ -39,3 +39,6 @@
 
 /* Zombie Escape library artwork */
 .game-art.zombie{background:#101b2c url('../assets/zombie-escape-thumbnail.svg') center/cover no-repeat}.game-art.zombie .art-symbol{display:none}
+
+/* Space Fury arcade thumbnail */
+.game-art.space{background:#08112a url('../assets/space-fury-thumbnail.svg') center/cover no-repeat}.game-art.space .art-symbol{display:none}
