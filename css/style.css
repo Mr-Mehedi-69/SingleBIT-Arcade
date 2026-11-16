@@ -42,3 +42,7 @@
 
 /* Space Fury arcade thumbnail */
 .game-art.space{background:#08112a url('../assets/space-fury-thumbnail.svg') center/cover no-repeat}.game-art.space .art-symbol{display:none}
+
+/* Five unique new arcade thumbnails */
+.game-art.cyber{background:#10132b url('../assets/cyberpunk-racing-thumbnail.svg') center/cover no-repeat}.game-art.cyber .art-symbol,.game-art.dungeon .art-symbol,.game-art.tower .art-symbol,.game-art.ocean .art-symbol,.game-art.football .art-symbol{display:none}
+.game-art.dungeon{background:#15102c url('../assets/dungeon-quest-thumbnail.svg') center/cover no-repeat}.game-art.tower{background:#0d241c url('../assets/tower-defense-thumbnail.svg') center/cover no-repeat}.game-art.ocean{background:#06243b url('../assets/deep-sea-explorer-thumbnail.svg') center/cover no-repeat}.game-art.football{background:#153b28 url('../assets/mini-football-thumbnail.svg') center/cover no-repeat}
