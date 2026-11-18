@@ -4,7 +4,7 @@ const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fa
 let category='all',favorites=read('sbArcadeFavorites',[]),played=read('sbArcadePlayed',[]),history=read('sbArcadeHistory',[]),onlyFavorites=false;
 const save=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
 const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const symbol=g=>({race:'🏎️',zombie:'🧟',space:'🚀',forest:'🌲💎'}[g.art]||'🎮');
+const symbol=g=>({snake:'🐍',race:'🏎️',zombie:'🧟',space:'🚀',forest:'🌲💎'}[g.art]||'🎮');
 function render(){
 let q=search.value.trim().toLowerCase();
 let list=games.filter(g=>(category==='all'||g.category===category)&&(!onlyFavorites||favorites.includes(g.id))&&(g.title+' '+g.description+' '+g.tag).toLowerCase().includes(q));
