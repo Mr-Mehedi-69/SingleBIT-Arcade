@@ -30,11 +30,21 @@ function updateHud(){
 function saveBest(){best=Math.max(best,score);try{localStorage.setItem('sbNokiaSnakeBest',String(best))}catch{}}
 function occupied(x,y){return snake.some(s=>s.x===x&&s.y===y)||obstacles.some(o=>o.x===x&&o.y===y)}
 function spawnFood(){
+ // Pick only a genuinely free tile. Keep a deterministic fallback so food
+ // can never silently disappear because of a random/index edge case.
  const free=[];
- for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++)if(!occupied(x,y))free.push({x,y});
- if(!free.length){food=null;return false}
- food=free[Math.floor(Math.random()*free.length)];
- return true;
+ for(let y=0;y<GRID;y++){
+  for(let x=0;x<GRID;x++){
+   if(!occupied(x,y))free.push({x,y});
+  }
+ }
+ if(free.length){
+  const index=Math.floor(Math.random()*free.length);
+  food=free[Math.max(0,Math.min(index,free.length-1))];
+  return true;
+ }
+ food=null;
+ return false;
 }
 function buildObstacles(){
  obstacles=[];
@@ -56,7 +66,7 @@ function reset(showStart=true){
  cancelAnimationFrame(raf);
  snake=[{x:18,y:18},{x:17,y:18},{x:16,y:18},{x:15,y:18}];
  dir={x:1,y:0};queuedDir={...dir};score=0;foodEaten=0;level=1;accumulator=0;turnLocked=false;state='ready';mode=modeSelect.value||'classic';
- buildObstacles();spawnFood();updateHud();draw();
+ buildObstacles();if(!spawnFood())console.warn('Snake: no free tile available for food');updateHud();draw();
  if(showStart)setOverlay('NOKIA SNAKE','Choose your route, collect 5 food items to level up, and watch the world transform.','START GAME',start);
 }
 function start(){reset(false);state='playing';overlay.classList.add('hidden');lastTime=performance.now();updateHud();raf=requestAnimationFrame(loop)}
@@ -112,12 +122,7 @@ function draw(){
   ctx.fillStyle=pal.obstacle;ctx.fillRect(o.x*CELL+1,o.y*CELL+1,CELL-2,CELL-2);
   ctx.fillStyle=pal.grid;ctx.fillRect(o.x*CELL+4,o.y*CELL+4,CELL-8,3);
  });
- if(food){
-  const cx=food.x*CELL+CELL/2,cy=food.y*CELL+CELL/2;
-  ctx.fillStyle=pal.food;ctx.beginPath();ctx.arc(cx,cy,7,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=pal.light;ctx.beginPath();ctx.arc(cx-2,cy-2,2,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#315c24';ctx.fillRect(cx+1,cy-10,3,5);
- }
+
  snake.forEach((s,i)=>{
   ctx.fillStyle=i===0?pal.light:pal.snake;
   ctx.fillRect(s.x*CELL+1,s.y*CELL+1,CELL-2,CELL-2);
@@ -129,6 +134,16 @@ function draw(){
    else{ctx.fillRect(s.x*CELL+5,s.y*CELL+14,3,3);ctx.fillRect(s.x*CELL+12,s.y*CELL+14,3,3)}
   }
  });
+ if(food){
+  const cx=food.x*CELL+CELL/2,cy=food.y*CELL+CELL/2;
+  ctx.save();
+  ctx.shadowColor=pal.food;ctx.shadowBlur=9;
+  ctx.fillStyle=pal.food;ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.lineWidth=2;ctx.strokeStyle='#ffffff';ctx.stroke();
+  ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(cx-2.5,cy-2.5,2.2,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#24451e';ctx.fillRect(cx+1,cy-12,3,6);
+  ctx.restore();
+ }
 }
 function setDirection(name){
  const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}},d=map[name];if(!d)return;
